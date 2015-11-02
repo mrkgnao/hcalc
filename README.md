@@ -13,7 +13,7 @@ and the like. All numbers are considered to be `Double`s. (So you don't have `mo
 
 Constants like `e` and `pi` are supported. There are also standard unary functions like the trig ones:
     
-    Enter expression: 4 pi / sin
+    Enter expression: pi 4 / sin
     0.7071067811865475
 
 Then, you have all sorts of what I call "fold operators" that collapse the entire stack to a single value. For instance, you can say

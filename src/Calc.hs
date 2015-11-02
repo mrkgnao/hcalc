@@ -29,7 +29,7 @@ reduceStk :: [Double] -> String -> [Double]
 reduceStk (x:y:ts) op
   | isJust op' = ans : ts
   where op' = M.lookup op binOps
-        ans = fromJust op' x y
+        ans = fromJust op' y x
 
 -- Unary operators
 reduceStk (x:xs) op
