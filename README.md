@@ -9,7 +9,7 @@ This is, first and foremost, a standard RPN calculator. So you can do
     Enter expression: 5 3 + 2 -
     -6.0
 
-and the like. All numbers are considered to be `Double`s. (So you don't have `mod` and everything. I could just typecast things and whatnot, but, y'know.)
+and the like. All numbers are considered to be `Double`s. (So you don't have `mod` and everything. I could just typecast things and whatnot, but, y'know . . .)
 
 Constants like `e` and `pi` are supported. There are also standard unary functions like the trig ones:
     
