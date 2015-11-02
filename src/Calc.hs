@@ -2,7 +2,7 @@ module Calc where
 
 import Data.List (foldl')
 import qualified Data.Map as M
-import Data.Maybe (fromJust)
+import Data.Maybe (fromJust, isJust)
 
 -- | Solve an RPN expression.
 -- This function takes a string, splits it, and then constructs
@@ -21,14 +21,21 @@ solveRPN = head' . foldl' reduceStk [] . words
 
 reduceStk :: [Double] -> String -> [Double]
 reduceStk (x:y:ts) op
-  | M.member op binOps =
-    (lookup' op binOps) x y : ts
+  | isJust op' = ans : ts
+  where op' = M.lookup op binOps
+        ans = fromJust op' x y
 reduceStk (x:xs) op
-  | M.member op unaryOps =
-    (lookup' op unaryOps) x : xs
+  | isJust op' = ans : xs
+  where op' = M.lookup op unaryOps
+        ans = fromJust op' x
 reduceStk xs op
-  | M.member op foldOps =
-    [(lookup' op foldOps) xs]
+  | isJust op' = [ans]
+  where op' = M.lookup op foldOps
+        ans = fromJust op' xs
+reduceStk xs cst
+  | isJust cst' = ans : xs
+  where cst' = M.lookup cst constants
+        ans = fromJust cst'
 reduceStk xs num = read num : xs
 
 -- | A small convenience function
@@ -46,4 +53,7 @@ binOps =
   M.fromList [("+",(+)),("-",(-)),("*",(*)),("/",(/)),("^",(**))]
 
 foldOps :: M.Map String ([Double] -> Double)
-foldOps = M.fromList [("sum",sum),("prod",product)]
+foldOps = M.fromList [("sum",sum),("prod",product),("max",maximum),("min",minimum)]
+
+constants :: M.Map String Double
+constants = M.fromList [("pi",pi),("e", exp 1)]
