@@ -22,39 +22,50 @@ solveRPN = head' . foldl' reduceStk [] . words
                   "Stack: \n" ++
                   show xs
 
+-- | Push a new element onto the stack and reduce it as far as possible.
 reduceStk :: [Double] -> String -> [Double]
+
+-- Binary operators
 reduceStk (x:y:ts) op
   | isJust op' = ans : ts
   where op' = M.lookup op binOps
         ans = fromJust op' x y
+
+-- Unary operators
 reduceStk (x:xs) op
   | isJust op' = ans : xs
   where op' = M.lookup op unaryOps
         ans = fromJust op' x
+
+-- Operators with arbitrary arity (which "fold" the stack)
 reduceStk xs op
+  | head op == '_' = map (fromJust $ M.lookup (tail op) unaryOps) xs
   | isJust op' = [ans]
   where op' = M.lookup op foldOps
         ans = fromJust op' xs
+
+-- Predefined constants
 reduceStk xs cst
   | isJust cst' = ans : xs
   where cst' = M.lookup cst constants
         ans = fromJust cst'
+
+-- Some number in the input
 reduceStk xs num = read num : xs
 
--- | A small convenience function
-lookup' :: Ord k => k -> M.Map k v -> v
-lookup' k m = fromJust $ M.lookup k m
-
+-- | Unary operators
 unaryOps :: M.Map String (Double -> Double)
 unaryOps =
   M.fromList
     [("exp",exp),("log",log),("sin",sin),("cos",cos),("tan",tan),("!",fac)]
   where fac = product . enumFromTo 1
 
+-- | Binary operators
 binOps :: M.Map String (Double -> Double -> Double)
 binOps =
   M.fromList [("+",(+)),("-",(-)),("*",(*)),("/",(/)),("^",(**))]
 
+-- | "Fold" operators
 foldOps :: M.Map String ([Double] -> Double)
 foldOps =
   M.fromList
@@ -68,12 +79,14 @@ foldOps =
     ,("hm",hm)
     ,("qm",rms)
     ,("rms",rms)]
+
   where powerMean :: Int -> [Double] -> Double
         powerMean p xs =
           (** (1 / p')) . (/ len) . sum $ map (** p') xs
           where p' = fromIntegral p :: Double
                 len =
                   fromIntegral $ length xs :: Double
+
         am, gm, hm, rms :: [Double] -> Double
         am = powerMean 1
         hm = powerMean (-1)
@@ -82,6 +95,8 @@ foldOps =
         -- gm = \x -> lim x 0 (powerMean x), and Haskell can't do that. :P
         -- Now, because I'm fancy:
         gm =
-          liftM2 (**) product ((1/) . fromIntegral . length)
+          liftM2 (**) product ((1 /) . fromIntegral . length)
+
+-- | Mathematical (and later other) constants
 constants :: M.Map String Double
 constants = M.fromList [("pi",pi),("e", exp 1)]
