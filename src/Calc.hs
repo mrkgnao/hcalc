@@ -3,6 +3,7 @@ module Calc where
 import Data.List (foldl')
 import qualified Data.Map as M
 import Data.Maybe (fromJust, isJust)
+import Control.Monad (liftM2)
 
 -- | Solve an RPN expression.
 -- This function takes a string, splits it, and then constructs
@@ -17,7 +18,9 @@ solveRPN = head' . foldl' reduceStk [] . words
           where errmsg =
                   "Error in input, " ++
                   show (length xs) ++
-                  " elements remaining on stack instead of 1!"
+                  " elements remaining on stack instead of 1!\n" ++
+                  "Stack: \n" ++
+                  show xs
 
 reduceStk :: [Double] -> String -> [Double]
 reduceStk (x:y:ts) op
@@ -53,7 +56,32 @@ binOps =
   M.fromList [("+",(+)),("-",(-)),("*",(*)),("/",(/)),("^",(**))]
 
 foldOps :: M.Map String ([Double] -> Double)
-foldOps = M.fromList [("sum",sum),("prod",product),("max",maximum),("min",minimum)]
-
+foldOps =
+  M.fromList
+    [("sum",sum)
+    ,("prod",product)
+    ,("max",maximum)
+    ,("min",minimum)
+    ,("avg",am)
+    ,("am",am)
+    ,("gm",gm)
+    ,("hm",hm)
+    ,("qm",rms)
+    ,("rms",rms)]
+  where powerMean :: Int -> [Double] -> Double
+        powerMean p xs =
+          (** (1 / p')) . (/ len) . sum $ map (** p') xs
+          where p' = fromIntegral p :: Double
+                len =
+                  fromIntegral $ length xs :: Double
+        am, gm, hm, rms :: [Double] -> Double
+        am = powerMean 1
+        hm = powerMean (-1)
+        rms = powerMean 2
+        -- GM cannot be represented like this, unless you can write
+        -- gm = \x -> lim x 0 (powerMean x), and Haskell can't do that. :P
+        -- Now, because I'm fancy:
+        gm =
+          liftM2 (**) product ((1/) . fromIntegral . length)
 constants :: M.Map String Double
 constants = M.fromList [("pi",pi),("e", exp 1)]

@@ -38,17 +38,17 @@ main main5,6
 
 ./src/Calc.hs,364
 module Calc Calc0,1
-solveRPN solveRPN12,13
 solveRPN solveRPN13,14
-reduceStk reduceStk21,22
-reduceStk reduceStk22,23
-lookup' lookup'41,42
-lookup' lookup'42,43
-unaryOps unaryOps44,45
-unaryOps unaryOps45,46
-binOps binOps50,51
-binOps binOps51,52
-foldOps foldOps54,55
-foldOps foldOps55,56
-constants constants57,58
-constants constants58,59
+solveRPN solveRPN14,15
+reduceStk reduceStk24,25
+reduceStk reduceStk25,26
+lookup' lookup'44,45
+lookup' lookup'45,46
+unaryOps unaryOps47,48
+unaryOps unaryOps48,49
+binOps binOps53,54
+binOps binOps54,55
+foldOps foldOps57,58
+foldOps foldOps58,59
+constants constants85,86
+constants constants86,87
