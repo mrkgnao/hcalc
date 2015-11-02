@@ -11,10 +11,10 @@ import Control.Monad (liftM2)
 -- The last remaining element on the stack is the answer.
 -- FIXME: Add some kind of error handling!
 
-solveRPN :: String -> Double
+solveRPN :: String -> Either String Double
 solveRPN = head' . foldl' reduceStk [] . words
-  where head' [x] = x
-        head' xs = error errmsg
+  where head' [x] = Right x
+        head' xs = Left errmsg
           where errmsg =
                   "Error in input, " ++
                   show (length xs) ++
